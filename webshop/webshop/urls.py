@@ -16,9 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from webshop_app.views import TestView
+from webshop_app.views import \
+    HomeView, \
+    LoginView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TestView.as_view(), name="test-view"),
+    path('', HomeView.as_view(), name="home-view"),
+    path('login/', LoginView.as_view(), name="login")
 ]
