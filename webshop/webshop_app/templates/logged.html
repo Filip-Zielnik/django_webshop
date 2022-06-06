@@ -7,12 +7,13 @@
 
 {% block body %}
     {% csrf_token %}
-    <p>Welcome {{ user.username }}</p>
+    <p>Witaj, {{ user.username }}</p>
 
     <ul>
-        <li>First name: {{ user.first_name }}</li>
-        <li>Last name: {{ user.last_name }}</li>
+        <li>Imię: {{ user.first_name }}</li>
+        <li>Nazwisko: {{ user.last_name }}</li>
         <li>Email: {{ user.email }}</li>
+        <li>Data urodzin: {{ user.profile.birth_date }}</li>
     </ul>
 
     <p><a href="{% url 'update-user' %}">Dane</a></p>

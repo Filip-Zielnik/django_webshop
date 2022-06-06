@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Logged out</title>
+    <title>Wylogowano</title>
 {% endblock %}
 
 
 {% block body %}
-     <div class="content">
-        <div class="section-inner clearfix">
 
-        <p>You are logged out. <a href="{% url 'login' %}">Click here</a> to login again.</p>
+    <p>Zostałeś wylogowany. Kliknij <a href="{% url 'login' %}">tutaj</a> by móc się zalogować ponownie.</p>
 
-        </div>
-    </div>
 {% endblock %}

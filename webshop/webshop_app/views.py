@@ -1,22 +1,52 @@
-from django.contrib import auth, messages
+from django.contrib import messages
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+
 from django.shortcuts import redirect, render
 from django.views import View
 
-from .models import Profile
-
-from .forms import LoginForm, RegistrationForm, UpdateUserForm
-from webshop_app.models import Product
+from .forms import LoginForm, UserForm, UpdateUserForm, ProfileForm
+from .models import Product, Profile
 
 
 class HomeView(View):
-    def get(self, request, *args, **kwargs):
+    """ Displays homepage """
+
+    def get(self, request):
         return render(request=request, template_name="home.html")
 
 
+class RegistrationView(View):
+    """ Displays registration form with extended django-user's fields """
+
+    def get(self, request, *args, **kwargs):
+        user_form = UserForm
+        profile_form = ProfileForm
+        context = {
+            'user_form': user_form,
+            'profile_form': profile_form,
+        }
+        return render(request=request, template_name="registration.html", context=context)
+
+    def post(self, request, *args, **kwargs):
+        user_form = UserForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            birth_date = profile_form.cleaned_data['birth_date']
+            user = user_form.save()
+            profile = Profile.objects.create(user=user, birth_date=birth_date)
+            profile.save()
+            user.set_password(user.password)
+            user.save()
+        return render(request=request, template_name="registration_message.html")
+
+
 class LoginView(View):
+    """ Allows user to log in using username & password """
+
     def get(self, request, *args, **kwargs):
         form = LoginForm
         context = {
@@ -38,50 +68,29 @@ class LoginView(View):
         context = {
             'form': form
         }
-        return render(request, 'login.html', context)
+        return render(request=request, template_name='login.html', context=context)
 
 
 class LogoutView(View):
+    """ Allows user to log out """
+
     def get(self, request, *args, **kwargs):
         logout(request)
-        return render(request, 'logout.html')
+        return render(request=request, template_name='logout.html')
 
 
-class RegistrationView(View):
-    def get(self, request, *args, **kwargs):
-        form = RegistrationForm
-        context = {
-            'form': form
-        }
-        return render(request=request, template_name="registration.html", context=context)
+class LoggedView(LoginRequiredMixin, View):
+    """ View ONLY available for logged users """
 
-    def post(self, request, *args, **kwargs):
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            email = form.cleaned_data['email']
-            user = User.objects.create(
-                username=username,
-                password=password,
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-            )
+    login_url = '/login/'
 
-            user.set_password(password)
-            user.save()
-        return HttpResponse('dodano użytkownika')
-
-
-class LoggedView(View):
     def get(self, request, *args, **kwargs):
         return render(request=request, template_name="logged.html")
 
 
 class CpuView(View):
+    """ Displays only products in CPU category(id=1) """
+
     def get(self, request, *args, **kwargs):
         form = Product.objects.filter(category_id='1')
         context = {
@@ -91,6 +100,8 @@ class CpuView(View):
 
 
 class GpuView(View):
+    """ Displays only products in GPU category(id=2) """
+
     def get(self, request, *args, **kwargs):
         form = Product.objects.filter(category_id='2')
         context = {
@@ -100,6 +111,8 @@ class GpuView(View):
 
 
 class MotherboardView(View):
+    """ Displays only products in Motherboards category(id=3) """
+
     def get(self, request, *args, **kwargs):
         form = Product.objects.filter(category_id='3')
         context = {
@@ -109,6 +122,8 @@ class MotherboardView(View):
 
 
 class ProductView(View):
+    """ Displays product details - specification, price, etc. """
+
     def get(self, request, product):
         form = Product.objects.filter(product=product)
         context = {
@@ -118,6 +133,8 @@ class ProductView(View):
 
 
 class UpdateUserView(View):
+    """ DO POPRAWY """
+
     def get(self, request, *args, **kwargs):
         user_form = UpdateUserForm
         context = {
