@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>
+        {% for product in form %}
+            {{ product.product }}
+        {% endfor %}
+    </title>
+{% endblock %}
+
+{% block body %}
+    {% load static %}
+    {% for product in form %}
+
+        <span style="font-size: 200%; ">{{ product.product }}</span>
+
+        <p><strong>Specyfikacja:</strong>
+        {{ product.description|linebreaks }}</p>
+
+        <p><strong>Cena:</strong>
+        {{ product.price }} PLN</p>
+
+        {% if product.available == True %}
+            <p style="color:green"><strong>Produkt dostępny!</strong></p>
+        {% elif product.available == False %}
+            <p style="color:red"><strong>Produkt niedostępny!</strong></p>
+        {% endif %}
+
+    {% endfor %}
+{% endblock %}

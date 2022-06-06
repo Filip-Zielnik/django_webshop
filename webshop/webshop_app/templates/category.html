@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Category</title>
+{% endblock %}
+
+{% block body %}
+
+    {% for product in form %}
+        <li><a href="http://127.0.0.1:8000/{{ product.product }}">{{ product.product }}</a></li>
+    {% endfor %}
+
+{% endblock %}

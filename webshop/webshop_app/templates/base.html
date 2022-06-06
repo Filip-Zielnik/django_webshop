@@ -2,18 +2,74 @@
 <!doctype html>
 <html lang="en">
     <head>
+{#        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />#}
         {% block head %}
             <meta charset="UTF-8">
-            <title>Document</title>
+            <title>Base Page</title>
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-            <ul>
-              <li>Username: {{ user.username }}</li>
-              <li>First name: {{ user.first_name }}</li>
-              <li>Birth Date: {{ user.profile.birth_date }}</li>
-            </ul>
-        {% endblock %}
+        <div class="navigation">
+                <ul>
+                    <li class="list active">
+                        <a href="http://127.0.0.1:8000/">
+                            <span class="icon">
+                                <ion-icon name="home-outline"></ion-icon>
+                            </span>
+
+                            <span class="text">Home</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="http://127.0.0.1:8000/login/">
+                            <span class="icon">
+                                <ion-icon name="log-in-outline"></ion-icon>
+                            </span>
+                            <span class="text">Login</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="http://127.0.0.1:8000/registration/">
+                            <span class="icon">
+                                <ion-icon name="reader-outline"></ion-icon>
+                            </span>
+                            <span class="text">Registration</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="#">
+                            <span class="icon">
+                                <ion-icon name="reorder-three-outline"></ion-icon>
+                            </span>
+                            <span class="text">
+                                <select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                                <option value="0">Select</option>
+                                <option value="http://127.0.0.1:8000/category/cpu/">CPU</option>
+                                <option value="http://127.0.0.1:8000/category/gpu/">GPU</option>
+                                <option value="http://127.0.0.1:8000/category/motherboards/">Motherboards</option>
+                            </select>
+                            </span>
+                        </a>
+                    </li>
+                    <div class="indicator"></div>
+                </ul>
+            </div>
+
+            <script>
+                const list = document.querySelectorAll('.list');
+                function activeLink(){
+                    list.forEach((item) =>
+                    item.classList.remove('active'));
+                    this.classList.add('active');
+                }
+                list.forEach((item) =>
+                item.addEventListener('click', activeLink));
+            </script>
+
+            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+            {% block body %}{% endblock %}
+
     </body>
 </html>

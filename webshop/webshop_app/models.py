@@ -9,30 +9,22 @@ from django.dispatch import receiver
 from django_countries.fields import CountryField
 
 
-# to jest tak roboczo, potem nadam konkretne nazwy kategoriom
-CATEGORY = [
-    (0, "pierwsza kategoria"),
-    (1, "druga kategoria"),
-    (2, "trzecia kategoria"),
-    (3, "czwarta kategoria"),
-    (4, "piąta kategoria"),
-]
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birth_date = models.DateField(null=True, blank=True)
+    profile_picture = models.ImageField(null=True, blank=True, upload_to='webshop_app/static/media/profiles')
 
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
 
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    def __str__(self):
+        return str(self.user)
 
 
 class Address(models.Model):
@@ -40,19 +32,26 @@ class Address(models.Model):
     country = CountryField()
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=10)  # varies by country
+    zip_code = models.CharField(max_length=10)
 
 
 class Category(models.Model):
-    category = models.IntegerField(choices=CATEGORY)
+    category = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.category
 
 
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     product = models.CharField(max_length=100)
-    description = models.TextField()
-    price = models.DecimalField(decimal_places=2, max_digits=4)
-    picture = models.ImageField(upload_to='picture/')
+    description = models.TextField(null=True)
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+    picture = models.ImageField(upload_to='webshop_app/static/media/products', null=True, blank=True)
+    available = models.BooleanField(default=True, null=False)
+
+    def __str__(self):
+        return self.product
 
 
 class Comment(models.Model):
