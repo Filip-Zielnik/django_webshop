@@ -2,7 +2,6 @@ from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 
 from django.shortcuts import redirect, render
 from django.views import View
@@ -91,7 +90,7 @@ class LoggedView(LoginRequiredMixin, View):
 class CpuView(View):
     """ Displays only products in CPU category(id=1) """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         form = Product.objects.filter(category_id='1')
         context = {
             'form': form
@@ -102,7 +101,7 @@ class CpuView(View):
 class GpuView(View):
     """ Displays only products in GPU category(id=2) """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         form = Product.objects.filter(category_id='2')
         context = {
             'form': form
@@ -113,7 +112,7 @@ class GpuView(View):
 class MotherboardView(View):
     """ Displays only products in Motherboards category(id=3) """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         form = Product.objects.filter(category_id='3')
         context = {
             'form': form

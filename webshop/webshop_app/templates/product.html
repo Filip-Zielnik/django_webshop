@@ -9,9 +9,8 @@
 {% endblock %}
 
 {% block body %}
-    {% load static %}
-    {% for product in form %}
 
+    {% for product in form %}
         <span style="font-size: 200%; ">{{ product.product }}</span>
 
         <p><strong>Specyfikacja:</strong>
@@ -22,9 +21,14 @@
 
         {% if product.available == True %}
             <p style="color:green"><strong>Produkt dostępny!</strong></p>
+
+            {% if user.is_authenticated %}
+                <input type="submit" value="Dodaj do koszyka">
+            {% endif %}
+
         {% elif product.available == False %}
             <p style="color:red"><strong>Produkt niedostępny!</strong></p>
         {% endif %}
-
     {% endfor %}
+
 {% endblock %}
