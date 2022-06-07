@@ -40,6 +40,12 @@ class RegistrationView(View):
             profile.save()
             user.set_password(user.password)
             user.save()
+        else:
+            context = {
+                'user_form': user_form,
+                'profile_form': profile_form,
+            }
+            return render(request=request, template_name="registration.html", context=context)
         return render(request=request, template_name="registration_message.html")
 
 

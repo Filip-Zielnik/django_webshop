@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from .models import Profile
 
@@ -22,11 +24,25 @@ class UserForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    birth_date = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    birth_date = forms.DateField(
+        label='Data urodzin',
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True,
+    )
 
     class Meta:
         model = Profile
-        fields = ('birth_date', )
+        fields = ('birth_date',)
+
+    def clean(self):
+        super(ProfileForm, self).clean()
+        birth_date = self.cleaned_data.get('birth_date')
+        user_age = (date.today() - birth_date).days / 365
+        if user_age < 18:
+            self._errors['birth_date'] = self.error_class(
+                ['Musisz mieć co najmniej 18 lat żeby się zarejestrować!']
+            )
+        return self.cleaned_data
 
 
 class UpdateUserForm(forms.Form):
