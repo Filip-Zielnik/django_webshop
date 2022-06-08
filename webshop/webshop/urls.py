@@ -25,21 +25,23 @@ from webshop_app.views import \
     CpuView, \
     GpuView, \
     MotherboardView, \
-    UpdateUserView, \
-    ProductView
+    ProductView, \
+    AddressView, \
+    UpdateUserView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HomeView.as_view(), name="home"),
-    path('home/', HomeView.as_view(), name="home1"),
+    path('', HomeView.as_view(), name="base"),
+    path('home/', HomeView.as_view(), name="home"),
     path('login/', LoginView.as_view(), name="login"),
     path('registration/', RegistrationView.as_view(), name="registration"),
+    path('updateuser/', UpdateUserView.as_view(), name="update-user"),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('logged/', LoggedView.as_view(), name="logged"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
     path('category/motherboards/', MotherboardView.as_view(), name="category-motherboard"),
-    path('update/', UpdateUserView.as_view(), name="update-user"),
-    path('<product>/', ProductView.as_view(), name="product-view")
+    path('<product>/', ProductView.as_view(), name="product"),
+    path('logged/<address>/', AddressView.as_view(), name="address"),
 ]

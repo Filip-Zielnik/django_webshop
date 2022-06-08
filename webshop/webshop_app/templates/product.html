@@ -24,6 +24,8 @@
 
             {% if user.is_authenticated %}
                 <input type="submit" value="Dodaj do koszyka">
+                {% else %}
+                <p><i>*** Aby dodać produkt do koszyka musisz być zalogowany! ***</i></p>
             {% endif %}
 
         {% elif product.available == False %}

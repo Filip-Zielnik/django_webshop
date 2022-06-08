@@ -1,13 +1,11 @@
-from django.contrib import messages
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.shortcuts import redirect, render
 from django.views import View
 
-from .forms import LoginForm, UserForm, UpdateUserForm, ProfileForm
-from .models import Product, Profile
+from .forms import LoginForm, UserForm, ProfileForm
+from .models import Address, Product, Profile
 
 
 class HomeView(View):
@@ -49,6 +47,36 @@ class RegistrationView(View):
         return render(request=request, template_name="registration_message.html")
 
 
+class UpdateUserView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user_form = UserForm
+        profile_form = ProfileForm
+        context = {
+            'user_form': user_form,
+            'profile_form': profile_form,
+        }
+        return render(request=request, template_name="update_user.html", context=context)
+
+    def post(self, request, *args, **kwargs):
+        user_form = UserForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            birth_date = profile_form.cleaned_data['birth_date']
+            user = user_form.save()
+            profile = Profile.objects.create(user=user, birth_date=birth_date)
+            profile.save()
+            user.set_password(user.password)
+            user.save()
+        else:
+            context = {
+                'user_form': user_form,
+                'profile_form': profile_form,
+            }
+            return render(request=request, template_name="update_user.html", context=context)
+        return render(request=request, template_name="update_user.html")
+
+
 class LoginView(View):
     """ Allows user to log in using username & password """
 
@@ -67,7 +95,7 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('logged')
+                return redirect('home')
             else:
                 form.add_error(None, 'Niepoprawny login lub hasło!')
         context = {
@@ -84,13 +112,31 @@ class LogoutView(View):
         return render(request=request, template_name='logout.html')
 
 
+# class LoggedView(LoginRequiredMixin, View):
+#     """ ROBOCZY WIDOK ŻEBY WYFILTROWAĆ ADRESY DANEGO UŻYTKOWNIKA """
+#
+#     login_url = '/login/'
+#
+#     def get(self, request, user_id, *args, **kwargs):
+#         profile = Profile.objects.get(user_id=user_id)
+#         form = Address.objects.filter(profile=profile)
+#         context = {
+#             'form': form,
+#             'profile': profile,
+#         }
+#         return render(request=request, template_name="logged.html", context=context)
+
 class LoggedView(LoginRequiredMixin, View):
     """ View ONLY available for logged users """
 
     login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
-        return render(request=request, template_name="logged.html")
+        form = Address.objects.all()
+        context = {
+            'form': form,
+        }
+        return render(request=request, template_name="logged.html", context=context)
 
 
 class CpuView(View):
@@ -129,7 +175,7 @@ class MotherboardView(View):
 class ProductView(View):
     """ Displays product details - specification, price, etc. """
 
-    def get(self, request, product):
+    def get(self, request, product, *args, **kwargs):
         form = Product.objects.filter(product=product)
         context = {
             'form': form
@@ -137,25 +183,14 @@ class ProductView(View):
         return render(request=request, template_name="product.html", context=context)
 
 
-class UpdateUserView(View):
-    """ DO POPRAWY """
+class AddressView(LoginRequiredMixin, View):
+    """ Displays detailed information about address such as country, city, ect. """
 
-    def get(self, request, *args, **kwargs):
-        user_form = UpdateUserForm
+    login_url = '/login/'
+
+    def get(self, request, address, *args, **kwargs):
+        form = Address.objects.filter(name=address)
         context = {
-            'form': user_form
+            'form': form
         }
-        return render(request=request, template_name="profile.html", context=context)
-
-    def profile(self, request):
-        if request.method == 'POST':
-            user_form = UpdateUserForm(request.POST, instance=request)
-
-            if user_form.is_valid():
-                user_form.save()
-                messages.success(request, 'Your profile is updated successfully')
-                return redirect(to='users-profile')
-        else:
-            user_form = UpdateUserForm(instance=request.user)
-
-        return render(request, 'profile.html', {'user_form': user_form})
+        return render(request=request, template_name="address.html", context=context)

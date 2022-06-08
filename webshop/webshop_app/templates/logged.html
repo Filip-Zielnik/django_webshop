@@ -1,21 +1,33 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Logged</title>
+    <title>Konto</title>
 {% endblock %}
 
 
 {% block body %}
+
     {% csrf_token %}
-    <p>Witaj, {{ user.username }}</p>
+    <strong>Twoje dane:</strong>
 
-    <ul>
-        <li>Imię: {{ user.first_name }}</li>
-        <li>Nazwisko: {{ user.last_name }}</li>
-        <li>Email: {{ user.email }}</li>
-        <li>Data urodzin: {{ user.profile.birth_date }}</li>
-    </ul>
+    <li>Nazwa użytkownika: {{ user.username }}</li>
+    <li>Imię: {{ user.first_name }}</li>
+    <li>Nazwisko: {{ user.last_name }}</li>
+    <li>Email: {{ user.email }}</li>
+    <li>Data urodzin: {{ user.profile.birth_date }}</li>
+    <a href="{% url 'update-user' %}">Zmień dane</a>
 
-    <p><a href="{% url 'update-user' %}">Dane</a></p>
-    <p><a href="{% url 'logout' %}">Wyloguj</a></p>
+    <p>
+        USER ID = {{ user.id }}, niech wyświetli tylko adresy do niego przypisane
+    </p>
+
+    <strong>Twoje adresy:</strong>
+    {% for address in form %}
+        <li><a href="http://127.0.0.1:8000/logged/{{ address.name }}/">{{ address.name }}</a></li>
+    {% endfor %}
+
+    <a href="#">Dodaj adres</a>
+    <br>
+    <a href="#">Usuń adres</a>
+
 {% endblock %}

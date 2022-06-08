@@ -1,7 +1,7 @@
 from datetime import date
 
 from django import forms
-from .models import Profile
+from .models import Profile, Address
 
 from django.contrib.auth.models import User
 
@@ -45,15 +45,17 @@ class ProfileForm(forms.ModelForm):
         return self.cleaned_data
 
 
-class UpdateUserForm(forms.Form):
-    username = forms.CharField(max_length=100, required=False, label='Imię')
-    last_name = forms.CharField(max_length=100, required=False, label='Nazwisko')
+# class AddressForm(forms.ModelForm):
+#     class Meta:
+#         model = Address
+#         fields = ('country', 'city', 'address', 'zip_code')
 
 
 # class UpdateUserForm(forms.ModelForm):
-#     username = forms.CharField(max_length=100)
-#     last_name = forms.CharField(max_length=100)
-
-    # class Meta:
-    #     model = User
-    #     fields = ['username', 'first_name', 'last_name', 'email']
+#     class Meta:
+#         model = User
+#
+#
+# class UpdateProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = Profile

@@ -17,10 +17,14 @@ class Profile(models.Model):
 
 class Address(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
     country = CountryField()
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
