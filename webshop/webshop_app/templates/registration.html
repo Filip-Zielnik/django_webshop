@@ -6,6 +6,12 @@
 
 {% block body %}
 
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:red"><strong>{{message}}</strong></p>
+        {% endfor %}
+    {% endif %}
+
     <form action="" method="POST">
         {% csrf_token %}
         {{ user_form.as_p }}

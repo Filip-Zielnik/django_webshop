@@ -27,7 +27,8 @@ from webshop_app.views import \
     MotherboardView, \
     ProductView, \
     AddressView, \
-    UpdateUserView
+    UpdateUserView, \
+    ChangePasswordView
 
 
 urlpatterns = [
@@ -38,7 +39,7 @@ urlpatterns = [
     path('registration/', RegistrationView.as_view(), name="registration"),
     path('updateuser/', UpdateUserView.as_view(), name="update-user"),
     path('logout/', LogoutView.as_view(), name="logout"),
-    # path('logged/<int:user_id>/', LoggedView.as_view(), name="logged"),
+    path('changepassword/', ChangePasswordView.as_view(), name="change-password"),
     path('logged/', LoggedView.as_view(), name="logged"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),

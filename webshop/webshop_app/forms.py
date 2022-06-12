@@ -51,6 +51,8 @@ class ProfileForm(FormCleanMixin):
 
 
 class UpdateUserForm(forms.ModelForm):
+    username = forms.CharField(label='Nazwa użytkownika')
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
@@ -67,3 +69,21 @@ class UpdateProfileForm(FormCleanMixin):
         fields = ('birth_date',)
         labels = {'birth_date': 'Data urodzin'}
         widgets = {'birth_date': forms.DateInput(attrs={'type': 'date'})}
+
+
+class ChangePasswordForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label='Nowe hasło')
+    # password2 = forms.CharField(widget=forms.PasswordInput, label='Powtórz nowe hasło')
+
+    class Meta:
+        model = User
+        fields = ('password',)
+
+    # def clean(self):
+    #     cleaned_date = super().clean()
+    #
+    #     password1 = cleaned_date['password']
+    #     password2 = cleaned_date['password2']
+    #
+    #     if password1 != password2:
+    #         raise ValidationError('Hasła są różne!')
