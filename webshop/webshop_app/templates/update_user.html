@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Produkty</title>
+    <title>Zmień dane</title>
 {% endblock %}
 
 {% block body %}
-    PRACUJĘ NAD TYM, PÓKI CO ZAMIAST EDYTOWAĆ TO DODAJE NOWEGO UŻYTKOWNIKA
 
     <form action="" method="POST">
         {% csrf_token %}
-        {{ user_form.as_p }}
-        {{ profile_form.as_p }}
+        {{ update_user_form.as_p }}
+        {{ update_profile_form.as_p }}
         <input type="submit" value="Zmień dane">
     </form>
 

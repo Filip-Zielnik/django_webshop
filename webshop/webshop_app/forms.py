@@ -1,9 +1,24 @@
 from datetime import date
 
 from django import forms
+from django.core.exceptions import ValidationError
+from django.forms import ModelForm
+
 from .models import Profile, Address
 
 from django.contrib.auth.models import User
+
+
+class FormCleanMixin(ModelForm):
+    def clean(self):
+        super(FormCleanMixin, self).clean()
+        birth_date = self.cleaned_data.get('birth_date')
+        user_age = (date.today() - birth_date).days / 365
+        if user_age < 18:
+            self._errors['birth_date'] = self.error_class(
+                ['Musisz mieć co najmniej 18 lat żeby się zarejestrować!']
+            )
+        return self.cleaned_data
 
 
 class LoginForm(forms.Form):
@@ -23,7 +38,7 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'password', 'first_name', 'last_name', 'email')
 
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(FormCleanMixin):
     birth_date = forms.DateField(
         label='Data urodzin',
         widget=forms.DateInput(attrs={'type': 'date'}),
@@ -34,28 +49,21 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('birth_date',)
 
-    def clean(self):
-        super(ProfileForm, self).clean()
-        birth_date = self.cleaned_data.get('birth_date')
-        user_age = (date.today() - birth_date).days / 365
-        if user_age < 18:
-            self._errors['birth_date'] = self.error_class(
-                ['Musisz mieć co najmniej 18 lat żeby się zarejestrować!']
-            )
-        return self.cleaned_data
+
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email')
+        labels = {'username': 'Nazwa użytkownika',
+                  'first_name': 'Imię',
+                  'last_name': 'Nazwisko',
+                  'email': 'Email',
+                  }
 
 
-# class AddressForm(forms.ModelForm):
-#     class Meta:
-#         model = Address
-#         fields = ('country', 'city', 'address', 'zip_code')
-
-
-# class UpdateUserForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-#
-#
-# class UpdateProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = Profile
+class UpdateProfileForm(FormCleanMixin):
+    class Meta:
+        model = Profile
+        fields = ('birth_date',)
+        labels = {'birth_date': 'Data urodzin'}
+        widgets = {'birth_date': forms.DateInput(attrs={'type': 'date'})}

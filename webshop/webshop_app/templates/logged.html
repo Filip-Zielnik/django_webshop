@@ -17,15 +17,15 @@
     <li>Data urodzin: {{ user.profile.birth_date }}</li>
     <a href="{% url 'update-user' %}">Zmień dane</a>
 
-    <p>
-        USER ID = {{ user.id }}, niech wyświetli tylko adresy do niego przypisane
-    </p>
+    <br>
+    <br>
 
     <strong>Twoje adresy:</strong>
     {% for address in form %}
         <li><a href="http://127.0.0.1:8000/logged/{{ address.name }}/">{{ address.name }}</a></li>
     {% endfor %}
 
+    <br>
     <a href="#">Dodaj adres</a>
     <br>
     <a href="#">Usuń adres</a>
