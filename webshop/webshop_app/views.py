@@ -199,12 +199,23 @@ class AddAddressView(LoginRequiredMixin, View):
         return render(request=request, template_name="add_address.html", context=context)
 
     def post(self, request, *args, **kwargs):
-
-        form = AddAddressForm(request.POST, instance=request.user.id)
-        # address = Address.objects.filter(profile_id=request.user.id)
+        form = AddAddressForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            name = form.cleaned_data['name']
+            country = form.cleaned_data['country']
+            city = form.cleaned_data['city']
+            address = form.cleaned_data['address']
+            zip_code = form.cleaned_data['zip_code']
+            address_model = Address.objects.create(
+                name=name,
+                country=country,
+                city=city,
+                address=address,
+                zip_code=zip_code,
+                profile_id=request.user.id
+            )
+            address_model.save()
             messages.success(request, 'Hurra!')
         else:
             messages.error(request, 'FAIL')
