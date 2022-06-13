@@ -23,6 +23,9 @@ class Address(models.Model):
     address = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
 
+    # class Meta:
+    #     order_with_respect_to = 'profile'
+
     def __str__(self):
         return self.name
 

@@ -28,9 +28,8 @@
     {% for address in form %}
         <li><a href="http://127.0.0.1:8000/logged/{{ address.name }}/">{{ address.name }}</a></li>
     {% endfor %}
-
     <br>
-    <a href="#">Dodaj adres</a>
+    <a href="{% url 'add-address' %}">Dodaj adres</a>
     <br>
     <a href="#">Usuń adres</a>
 

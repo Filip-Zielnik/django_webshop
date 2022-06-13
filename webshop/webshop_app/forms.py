@@ -1,5 +1,8 @@
 from datetime import date
 
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
@@ -73,17 +76,23 @@ class UpdateProfileForm(FormCleanMixin):
 
 class ChangePasswordForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label='Nowe hasło')
-    # password2 = forms.CharField(widget=forms.PasswordInput, label='Powtórz nowe hasło')
 
     class Meta:
         model = User
         fields = ('password',)
 
-    # def clean(self):
-    #     cleaned_date = super().clean()
-    #
-    #     password1 = cleaned_date['password']
-    #     password2 = cleaned_date['password2']
-    #
-    #     if password1 != password2:
-    #         raise ValidationError('Hasła są różne!')
+
+class AddAddressForm(forms.ModelForm):
+
+    class Meta:
+        model = Address
+        fields = ('name', 'country', 'city', 'address', 'zip_code')
+        labels = {
+            'name': 'Nazwa',
+            'country': 'Kraj',
+            'city': 'Miasto',
+            'address': 'Adres',
+            'zip_code': 'Kod pocztowy',
+
+        }
+        widgets = {'country': CountrySelectWidget()}

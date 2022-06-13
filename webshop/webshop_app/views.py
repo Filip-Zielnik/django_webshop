@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views import View
 
-from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm
+from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm
 from .models import Address, Product, Profile
 
 User = get_user_model
@@ -166,9 +166,7 @@ class LoggedView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         """ Displays user's data such as username, first name, address, ect. """
-        user = request.user
-        profile = Profile.objects.get(user_id=user.id)
-        form = Address.objects.filter(profile_id=profile)
+        form = Address.objects.filter(profile_id=request.user.id)
         context = {
             'form': form,
         }
@@ -181,13 +179,40 @@ class AddressView(LoginRequiredMixin, View):
     login_url = '/login/'
 
     def get(self, request, address, *args, **kwargs):
-        user = request.user
-        profile = Profile.objects.get(user_id=user.id)
-        form = Address.objects.filter(profile_id=profile, name=address)
+        form = Address.objects.filter(profile_id=request.user.id, name=address)
         context = {
             'form': form
         }
         return render(request=request, template_name="address.html", context=context)
+
+
+class AddAddressView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
+
+    def get(self, request, *args, **kwargs):
+        address = Address.objects.filter(profile_id=request.user.id)
+        form = AddAddressForm()
+        context = {
+            'form': form,
+        }
+        return render(request=request, template_name="add_address.html", context=context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = AddAddressForm(request.POST, instance=request.user.id)
+        # address = Address.objects.filter(profile_id=request.user.id)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Hurra!')
+        else:
+            messages.error(request, 'FAIL')
+
+        context = {
+            'form': form
+        }
+        return render(request=request, template_name="add_address.html", context=context)
 
 
 class CpuView(View):
