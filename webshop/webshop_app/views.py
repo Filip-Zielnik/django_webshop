@@ -187,11 +187,12 @@ class AddressView(LoginRequiredMixin, View):
 
 
 class AddAddressView(LoginRequiredMixin, View):
+    """ Allows user to add new address. """
 
     login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
-        address = Address.objects.filter(profile_id=request.user.id)
+        """ Displays address form to fill. """
         form = AddAddressForm()
         context = {
             'form': form,
@@ -199,6 +200,7 @@ class AddAddressView(LoginRequiredMixin, View):
         return render(request=request, template_name="add_address.html", context=context)
 
     def post(self, request, *args, **kwargs):
+        """ Creates new user's address. """
         form = AddAddressForm(request.POST)
 
         if form.is_valid():
@@ -216,9 +218,9 @@ class AddAddressView(LoginRequiredMixin, View):
                 profile_id=request.user.id
             )
             address_model.save()
-            messages.success(request, 'Hurra!')
+            messages.success(request, 'Adres został dodany!')
         else:
-            messages.error(request, 'FAIL')
+            messages.error(request, 'Adres nie został dodany!')
 
         context = {
             'form': form
