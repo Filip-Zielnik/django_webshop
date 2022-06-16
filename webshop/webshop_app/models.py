@@ -26,9 +26,6 @@ class Address(models.Model):
     def __str__(self):
         return self.name
 
-    # class Meta:
-    #     order_with_respect_to = 'profile'
-
 
 class Category(models.Model):
     category = models.CharField(max_length=100)

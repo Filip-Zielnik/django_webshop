@@ -97,7 +97,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
         """ Displays change password form. """
         form = ChangePasswordForm(instance=request.user)
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="change_password.html", context=context)
 
@@ -115,7 +115,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
             messages.error(request, 'Hasło nie zostało zmienione!')
 
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="change_password.html", context=context)
 
@@ -127,7 +127,7 @@ class LoginView(View):
         """ Displays login form. """
         form = LoginForm
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="login.html", context=context)
 
@@ -145,7 +145,7 @@ class LoginView(View):
                 form.add_error(None, 'Niepoprawny login lub hasło!')
 
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name='login.html', context=context)
 
@@ -181,7 +181,7 @@ class AddressView(LoginRequiredMixin, View):
     def get(self, request, address, *args, **kwargs):
         form = Address.objects.filter(profile_id=request.user.id, name=address)
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="address.html", context=context)
 
@@ -215,7 +215,7 @@ class AddAddressView(LoginRequiredMixin, View):
                 city=city,
                 address=address,
                 zip_code=zip_code,
-                profile_id=request.user.id
+                profile_id=request.user.id,
             )
             address_model.save()
             messages.success(request, 'Adres został dodany!')
@@ -223,9 +223,36 @@ class AddAddressView(LoginRequiredMixin, View):
             messages.error(request, 'Adres nie został dodany!')
 
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="add_address.html", context=context)
+
+
+class ChangeAddressView(LoginRequiredMixin, View):
+    """ Allows user to change address details. """
+
+    login_url = '/login/'
+
+    def get(self, request, address, *args, **kwargs):
+        """ Displays changeable address details. """
+        address = Address.objects.get(profile_id=request.user.id, name=address)
+        form = AddAddressForm(instance=address)
+        context = {
+            'form': form,
+        }
+        return render(request=request, template_name="change_address.html", context=context)
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class DeleteAddressView(LoginRequiredMixin, View):
+    """ Allows user to delete address/addresses. """
+
+    login_url = '/login/'
+
+    def get(self, request, *args, **kwargs):
+        pass
 
 
 class CpuView(View):
@@ -234,7 +261,7 @@ class CpuView(View):
     def get(self, request):
         form = Product.objects.filter(category_id='1')
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="category.html", context=context)
 
@@ -245,7 +272,7 @@ class GpuView(View):
     def get(self, request):
         form = Product.objects.filter(category_id='2')
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="category.html", context=context)
 
@@ -256,7 +283,7 @@ class MotherboardView(View):
     def get(self, request):
         form = Product.objects.filter(category_id='3')
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="category.html", context=context)
 
@@ -267,6 +294,6 @@ class ProductView(View):
     def get(self, request, product, *args, **kwargs):
         form = Product.objects.filter(product=product)
         context = {
-            'form': form
+            'form': form,
         }
         return render(request=request, template_name="product.html", context=context)

@@ -29,7 +29,8 @@ from webshop_app.views import \
     AddressView, \
     UpdateUserView, \
     ChangePasswordView, \
-    AddAddressView
+    AddAddressView, \
+    ChangeAddressView
 
 
 urlpatterns = [
@@ -43,6 +44,7 @@ urlpatterns = [
     path('changepassword/', ChangePasswordView.as_view(), name="change-password"),
     path('logged/', LoggedView.as_view(), name="logged"),
     path('addaddress/', AddAddressView.as_view(), name="add-address"),
+    path('changeaddress/<address>/', ChangeAddressView.as_view(), name="change-address"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
     path('category/motherboards/', MotherboardView.as_view(), name="category-motherboard"),
