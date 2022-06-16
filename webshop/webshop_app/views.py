@@ -3,11 +3,11 @@ from django.contrib.auth import authenticate, login, logout, get_user_model, upd
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 
 from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm
-from .models import Address, Product, Profile
+from .models import Address, Product, Profile, Order, Cart
 
 User = get_user_model
 
@@ -166,9 +166,11 @@ class LoggedView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         """ Displays user's data such as username, first name, address, ect. """
-        form = Address.objects.filter(profile_id=request.user.id).order_by('name')
+        address_form = Address.objects.filter(profile_id=request.user.id).order_by('name')
+        # order_form = Order.objects.filter(profile_id=request.user.id).order_by('order_date')
         context = {
-            'form': form,
+            'address_form': address_form,
+            # 'order_form': order_form,
         }
         return render(request=request, template_name="logged.html", context=context)
 
@@ -268,6 +270,25 @@ class ChangeAddressView(LoginRequiredMixin, View):
         return render(request=request, template_name="change_address.html", context=context)
 
 
+class CartView(View):
+    def get(self, request, *args, **kwargs):
+        form = Cart.objects.filter(user_id=request.user.id)
+        # for product in form:
+        #     price = 0
+        #
+        context = {
+            'form': form,
+        }
+        return render(request=request, template_name="cart.html", context=context)
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class OrderView(View):
+    pass
+
+
 class CpuView(View):
     """ Displays only products in CPU category(id=1). """
 
@@ -304,9 +325,25 @@ class MotherboardView(View):
 class ProductView(View):
     """ Displays product details - specification, price, etc. """
 
-    def get(self, request, product, *args, **kwargs):
-        form = Product.objects.filter(product=product)
+    def get(self, request, product_id, *args, **kwargs):
+        form = Product.objects.filter(id=product_id)
         context = {
             'form': form,
+        }
+        return render(request=request, template_name="product.html", context=context)
+
+    def post(self, request, product_id, *args, **kwargs):
+        """ Adds product to cart. """
+        quantity = 1
+        product = Product.objects.get(pk=product_id)
+        cart = Cart.objects.create(
+            user_id=request.user.id,
+            quantity=quantity,
+            product_id=product,
+        )
+        cart.save()
+
+        context = {
+            'form': product_id,
         }
         return render(request=request, template_name="product.html", context=context)

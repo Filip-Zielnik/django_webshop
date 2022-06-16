@@ -46,22 +46,25 @@ class Product(models.Model):
         return self.product
 
 
-class Comment(models.Model):
-    comment = models.TextField(max_length=1000)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    total_price = models.DecimalField(decimal_places=2, max_digits=6)
 
 
 class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     order_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
     order_date = models.DateTimeField(default=datetime.now)
     note = models.TextField(null=True, blank=True, max_length=1000)
     cancelled = models.BooleanField(default=False)
     confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user
+
+
+class Comment(models.Model):
+    comment = models.TextField(max_length=1000)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)

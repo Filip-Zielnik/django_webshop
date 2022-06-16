@@ -30,7 +30,9 @@ from webshop_app.views import \
     UpdateUserView, \
     ChangePasswordView, \
     AddAddressView, \
-    ChangeAddressView
+    ChangeAddressView, \
+    CartView, \
+    OrderView
 
 
 urlpatterns = [
@@ -46,8 +48,10 @@ urlpatterns = [
     path('address/<int:address_id>/', AddressView.as_view(), name="address"),
     path('addaddress/', AddAddressView.as_view(), name="add-address"),
     path('changeaddress/<int:address_id>/', ChangeAddressView.as_view(), name="change-address"),
+    path('cart/', CartView.as_view(), name="cart"),
+    path('order/', OrderView.as_view(), name="order"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
     path('category/motherboards/', MotherboardView.as_view(), name="category-motherboard"),
-    path('<product>/', ProductView.as_view(), name="product"),
+    path('<int:product_id>/', ProductView.as_view(), name="product"),
 ]
