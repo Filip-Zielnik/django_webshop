@@ -242,8 +242,21 @@ class ChangeAddressView(LoginRequiredMixin, View):
         }
         return render(request=request, template_name="change_address.html", context=context)
 
-    def post(self, request, *args, **kwargs):
-        pass
+    def post(self, request, address, *args, **kwargs):
+        """ Modifies user's address. """
+        address = Address.objects.get(profile_id=request.user.id, name=address)
+        form = AddAddressForm(request.POST, instance=address)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Adres został zmieniony!')
+        else:
+            messages.error(request, 'Adres nie został zmieniony!')
+
+        context = {
+            'form': form,
+        }
+        return render(request=request, template_name="change_address.html", context=context)
 
 
 class DeleteAddressView(LoginRequiredMixin, View):
