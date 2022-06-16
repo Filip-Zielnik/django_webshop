@@ -178,8 +178,8 @@ class AddressView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, address, *args, **kwargs):
-        form = Address.objects.filter(profile_id=request.user.id, name=address)
+    def get(self, request, address_id, *args, **kwargs):
+        form = Address.objects.filter(profile_id=request.user.id, id=address_id)
         context = {
             'form': form,
         }
@@ -233,18 +233,18 @@ class ChangeAddressView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, address, *args, **kwargs):
+    def get(self, request, address_id, *args, **kwargs):
         """ Displays changeable address details. """
-        address = Address.objects.get(profile_id=request.user.id, name=address)
+        address = Address.objects.get(profile_id=request.user.id, id=address_id)
         form = AddAddressForm(instance=address)
         context = {
             'form': form,
         }
         return render(request=request, template_name="change_address.html", context=context)
 
-    def post(self, request, address, *args, **kwargs):
+    def post(self, request, address_id, *args, **kwargs):
         """ Modifies user's address. """
-        address = Address.objects.get(profile_id=request.user.id, name=address)
+        address = Address.objects.get(profile_id=request.user.id, id=address_id)
         form = AddAddressForm(request.POST, instance=address)
 
         if form.is_valid():

@@ -17,7 +17,7 @@
         <li>Ulica: {{ address.address }}</li>
         <li>Kod pocztowy: {{ address.zip_code }}</li>
 
-        <a href="{% url 'change-address' address %}">Zmień adres</a>
+        <a href="/changeaddress/{{ address.id }}/">Zmień adres</a>
     {% endfor %}
 
 {% endblock %}

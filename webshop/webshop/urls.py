@@ -44,10 +44,10 @@ urlpatterns = [
     path('changepassword/', ChangePasswordView.as_view(), name="change-password"),
     path('logged/', LoggedView.as_view(), name="logged"),
     path('addaddress/', AddAddressView.as_view(), name="add-address"),
-    path('changeaddress/<address>/', ChangeAddressView.as_view(), name="change-address"),
+    path('changeaddress/<int:address_id>/', ChangeAddressView.as_view(), name="change-address"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
     path('category/motherboards/', MotherboardView.as_view(), name="category-motherboard"),
     path('<product>/', ProductView.as_view(), name="product"),
-    path('logged/<address>/', AddressView.as_view(), name="address"),
+    path('address/<int:address_id>/', AddressView.as_view(), name="address"),
 ]
