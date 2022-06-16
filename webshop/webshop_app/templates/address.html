@@ -18,6 +18,14 @@
         <li>Kod pocztowy: {{ address.zip_code }}</li>
 
         <a href="/changeaddress/{{ address.id }}/">Zmień adres</a>
+
+        <br>
+
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Usuń adres">
+        </form>
+
     {% endfor %}
 
 {% endblock %}

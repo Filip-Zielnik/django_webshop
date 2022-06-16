@@ -166,7 +166,7 @@ class LoggedView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         """ Displays user's data such as username, first name, address, ect. """
-        form = Address.objects.filter(profile_id=request.user.id)
+        form = Address.objects.filter(profile_id=request.user.id).order_by('name')
         context = {
             'form': form,
         }
@@ -174,7 +174,10 @@ class LoggedView(LoginRequiredMixin, View):
 
 
 class AddressView(LoginRequiredMixin, View):
-    """ Displays detailed information about address such as country, city, ect. """
+    """
+    GET: Displays detailed information about address such as country, city, ect.
+    POST: Allows to delete address.
+    """
 
     login_url = '/login/'
 
@@ -184,6 +187,12 @@ class AddressView(LoginRequiredMixin, View):
             'form': form,
         }
         return render(request=request, template_name="address.html", context=context)
+
+    def post(self, request, address_id, *args, **kwargs):
+        """ Deletes the user's address. """
+        address = Address.objects.filter(profile_id=request.user.id, id=address_id)
+        address.delete()
+        return redirect('logged')
 
 
 class AddAddressView(LoginRequiredMixin, View):
@@ -257,15 +266,6 @@ class ChangeAddressView(LoginRequiredMixin, View):
             'form': form,
         }
         return render(request=request, template_name="change_address.html", context=context)
-
-
-class DeleteAddressView(LoginRequiredMixin, View):
-    """ Allows user to delete address/addresses. """
-
-    login_url = '/login/'
-
-    def get(self, request, *args, **kwargs):
-        pass
 
 
 class CpuView(View):
