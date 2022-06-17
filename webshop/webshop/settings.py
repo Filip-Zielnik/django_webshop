@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import django_heroku
 import os
 from pathlib import Path
 
@@ -26,7 +27,7 @@ SECRET_KEY = 'django-insecure-8ery)5t#fccon_ua45u03_8@*pmbdvqafy$3^zku)bw8tid%xg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['webshop.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -136,3 +137,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+django_heroku.settings(locals())
