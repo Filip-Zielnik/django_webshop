@@ -273,19 +273,27 @@ class ChangeAddressView(LoginRequiredMixin, View):
 class CartView(View):
     def get(self, request, *args, **kwargs):
         form = Cart.objects.filter(user_id=request.user.id)
-        # for product in form:
-        #     price = 0
-        #
         context = {
             'form': form,
         }
         return render(request=request, template_name="cart.html", context=context)
 
-    def post(self, request, *args, **kwargs):
-        pass
 
-    def add_to_cart(self, request, pk):
-        pass
+def add_to_cart(request, pk):
+    if request.user.is_authenticated:
+        user = request.user.id
+        product = get_object_or_404(Product, pk=pk)
+        Cart.objects.create(
+            product=product,
+            user_id=user,
+        )
+        return redirect('product', pk=pk)
+
+
+def remove_from_cart(request, pk):
+    if request.user.is_authenticated:
+        user = request.user.id
+        product = get_object_or_404(Product, pk=pk)
 
 
 class OrderView(View):
@@ -328,25 +336,9 @@ class MotherboardView(View):
 class ProductView(View):
     """ Displays product details - specification, price, etc. """
 
-    def get(self, request, product_id, *args, **kwargs):
-        form = Product.objects.filter(id=product_id)
+    def get(self, request, pk, *args, **kwargs):
+        form = Product.objects.filter(id=pk)
         context = {
             'form': form,
-        }
-        return render(request=request, template_name="product.html", context=context)
-
-    def post(self, request, product_id, *args, **kwargs):
-        """ Adds product to cart. """
-        quantity = 1
-        product = Product.objects.get(pk=product_id)
-        cart = Cart.objects.create(
-            user_id=request.user.id,
-            quantity=quantity,
-            product_id=product,
-        )
-        cart.save()
-
-        context = {
-            'form': product_id,
         }
         return render(request=request, template_name="product.html", context=context)

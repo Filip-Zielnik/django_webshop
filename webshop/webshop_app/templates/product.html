@@ -10,7 +10,6 @@
 
 {% block body %}
 
-    <form action="" method="POST">
     {% csrf_token %}
 
     {% for product in form %}
@@ -26,7 +25,9 @@
             <p style="color:green"><strong>Produkt dostępny!</strong></p>
 
             {% if user.is_authenticated %}
-                <input type="submit" value="Dodaj do koszyka">
+
+                <a target="_blank" href="/add_to_cart/{{ product.pk }}/">Dodaj do koszyka</a>
+
                 {% else %}
                 <p><i>*** Aby dodać produkt do koszyka musisz być zalogowany! ***</i></p>
             {% endif %}
@@ -35,5 +36,5 @@
             <p style="color:red"><strong>Produkt niedostępny!</strong></p>
         {% endif %}
     {% endfor %}
-    </form>
+
 {% endblock %}

@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django_countries.fields import CountryField
 
+from django.shortcuts import reverse
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -44,6 +46,16 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product
+
+    def get_add_to_cart_url(self) :
+        return reverse("core:add-to-cart", kwargs={
+            "pk": self.pk
+        })
+
+    def get_remove_from_cart_url(self):
+        return reverse("core:remove-from-cart", kwargs={
+            "pk": self.pk
+        })
 
 
 class Cart(models.Model):
