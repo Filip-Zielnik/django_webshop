@@ -290,10 +290,10 @@ def add_to_cart(request, pk):
         return redirect('product', pk=pk)
 
 
-def remove_from_cart(request, pk):
-    if request.user.is_authenticated:
-        user = request.user.id
-        product = get_object_or_404(Product, pk=pk)
+# def remove_from_cart(request, pk):
+#     if request.user.is_authenticated:
+#         user = request.user.id
+#         product = get_object_or_404(Product, pk=pk)
 
 
 class OrderView(View):
