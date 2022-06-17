@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class TestUser(TestCase):
 
     def test_login(self):
+        """ Checks if the user can log in. """
         user = User.objects.create(username='test_user')
         user.set_password('12345')
         user.save()
