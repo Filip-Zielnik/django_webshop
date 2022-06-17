@@ -51,7 +51,6 @@ urlpatterns = [
     path('changeaddress/<int:address_id>/', ChangeAddressView.as_view(), name="change-address"),
     path('cart/', CartView.as_view(), name="cart"),
     path('add_to_cart/<pk>/', add_to_cart, name="add-to-cart"),
-    # path('add_to_cart/<pk>/', AddToCartView.as_view(), name="add-to-cart"),
     path('order/', OrderView.as_view(), name="order"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
