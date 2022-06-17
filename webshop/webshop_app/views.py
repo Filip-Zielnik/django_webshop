@@ -284,6 +284,9 @@ class CartView(View):
     def post(self, request, *args, **kwargs):
         pass
 
+    def add_to_cart(self, request, pk):
+        pass
+
 
 class OrderView(View):
     pass
