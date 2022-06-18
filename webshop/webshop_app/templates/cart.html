@@ -25,6 +25,13 @@
         {% csrf_token %}
 
         {% if form %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color:green"><strong>{{message}}</strong></p>
+                {% endfor %}
+            {% endif %}
+
             <table class="tab">
                 <thead>
                     <th>Produkt</th>
@@ -36,25 +43,23 @@
                     <tr>
                         <td>{{ product.product }}</td>
                         <td>{{ product.quantity }}</td>
-                        <td>{{ product.id }}</td>
+                        <td>{{ product.product.price }} PLN</td>
                         <td>
-                            <a target="_blank" href="/remove-from-cart/{{ product.id }}/">Usuń</a>
+                            <a href="/remove-from-cart/{{ product.id }}/">Usuń</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
-        </table>
+            </table>
 
-        <p>Całkowita kwota: <strong>XXX PLN</strong> </p>
+            <p>Wartość koszyka: <strong>XXX PLN</strong></p>
 
-        <input type="submit" value="Zamów">
+            <input type="submit" value="Zamów">
 
-        {% else %}
-            <strong>Koszyk jest pusty!</strong>
-        {% endif %}
+            {% else %}
+                <strong>Koszyk jest pusty!</strong>
+            {% endif %}
 
     </form>
-
-    <script></script>
 
 {% endblock %}

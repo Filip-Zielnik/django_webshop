@@ -13,6 +13,13 @@
     {% csrf_token %}
 
     {% for product in form %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color:green"><strong>{{message}}</strong></p>
+            {% endfor %}
+        {% endif %}
+
         <span style="font-size: 200%; ">{{ product.product }}</span>
 
         <p><strong>Specyfikacja:</strong>
@@ -25,10 +32,8 @@
             <p style="color:green"><strong>Produkt dostępny!</strong></p>
 
             {% if user.is_authenticated %}
-
-                <a target="_blank" href="/add-to-cart/{{ product.pk }}/">Dodaj do koszyka</a>
-
-                {% else %}
+                <a href="/add-to-cart/{{ product.pk }}/">Dodaj do koszyka</a>
+            {% else %}
                 <p><i>*** Aby dodać produkt do koszyka musisz być zalogowany! ***</i></p>
             {% endif %}
 

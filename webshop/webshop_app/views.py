@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
@@ -7,7 +8,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 
 from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm
-from .models import Address, Product, Profile, Cart
+from .models import Address, Product, Profile, Cart, Order
 
 User = get_user_model
 
@@ -167,10 +168,10 @@ class LoggedView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         """ Displays user's data such as username, first name, address, ect. """
         address_form = Address.objects.filter(profile_id=request.user.id).order_by('name')
-        # order_form = Order.objects.filter(profile_id=request.user.id).order_by('order_date')
+        order_form = Order.objects.filter(user_id=request.user.id)
         context = {
             'address_form': address_form,
-            # 'order_form': order_form,
+            'order_form': order_form,
         }
         return render(request=request, template_name="logged.html", context=context)
 
@@ -270,35 +271,57 @@ class ChangeAddressView(LoginRequiredMixin, View):
         return render(request=request, template_name="change_address.html", context=context)
 
 
-class CartView(View):
+class CartView(LoginRequiredMixin, View):
+    """ Allows user to check the cart, remove products and to place the order. """
+
+    login_url = '/login/'
+
     def get(self, request, *args, **kwargs):
+        """ Displays products in the cart. """
         form = Cart.objects.filter(user_id=request.user.id)
         context = {
             'form': form,
         }
         return render(request=request, template_name="cart.html", context=context)
 
+    def post(self, request, *args, **kwargs):
+        """ Creates order. """
+        pass
 
+
+@login_required
 def add_to_cart(request, pk):
-    if request.user.is_authenticated:
-        user = request.user.id
-        product = get_object_or_404(Product, pk=pk)
-        Cart.objects.create(
-            product=product,
-            user_id=user,
-        )
-        return redirect('product', pk=pk)
+    """ Adds product to the cart. """
+    user = request.user.id
+    product = get_object_or_404(Product, pk=pk)
+    Cart.objects.create(
+        product=product,
+        user_id=user,
+    )
+    messages.success(request, 'Dodano produkt do koszyka!')
+    return redirect('product', pk=pk)
 
 
+@login_required
 def remove_from_cart(request, cart_id):
-    if request.user.is_authenticated:
-        cart = Cart.objects.get(user=request.user.id, id=cart_id)
-        cart.delete()
-        return redirect('cart')
+    """ Removes product from the cart. """
+    cart = Cart.objects.get(user=request.user.id, id=cart_id)
+    cart.delete()
+    messages.success(request, 'Produkt został usunięty z koszyka!')
+    return redirect('cart')
 
 
-class OrderView(View):
-    pass
+class OrderView(LoginRequiredMixin, View):
+    """ ROBOCZY WIDOK. """
+
+    login_url = '/login/'
+
+    def get(self, request, *args, **kwargs):
+        order_form = Order.objects.filter(user=request.user.id)
+        context = {
+            'order_from': order_form,
+        }
+        return render(request=request, template_name="order.html", context=context)
 
 
 class CpuView(View):

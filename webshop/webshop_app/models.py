@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django_countries.fields import CountryField
 
-from django.shortcuts import reverse
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -47,36 +45,16 @@ class Product(models.Model):
     def __str__(self):
         return self.product
 
-    def get_absolute_url(self):
-        return reverse("core:product", kwargs={
-            "pk": self.pk
-        })
-
-    def get_add_to_cart_url(self) :
-        return reverse("core:add-to-cart", kwargs={
-            "pk": self.pk
-        })
-
-    def get_remove_from_cart_url(self):
-        return reverse("core:remove-from-cart", kwargs={
-            "pk": self.pk
-        })
-
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
-    def get_remove_from_cart_url(self):
-        return reverse("core:remove-from-cart", kwargs={
-            "pk": self.pk
-        })
-
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ManyToManyField(Cart)
     order_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
     order_date = models.DateTimeField(default=datetime.now)
     note = models.TextField(null=True, blank=True, max_length=1000)
@@ -84,9 +62,4 @@ class Order(models.Model):
     confirmed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user
-
-
-class Comment(models.Model):
-    comment = models.TextField(max_length=1000)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+        return str(self.user)

@@ -31,9 +31,12 @@
 
     <p></p>
 
-    <strong>Twoje zamówienia:</strong>
-    {% for order in order_form %}
-        <li>{{ order.id }}</li>
-    {% endfor %}
+    {% if order_form %}
+        <strong>Twoje zamówienia:</strong>
+
+        {% for order in order_form %}
+            <li><a href="/order/{{ order.id }}">{{ order.order_id }}</a></li>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

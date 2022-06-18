@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Address, Category, Comment, Product, Profile, Cart, Order
+from .models import Address, Category, Product, Profile, Cart, Order
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -24,7 +24,6 @@ class CartAdminView(admin.ModelAdmin):
 
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Category)
-admin.site.register(Comment)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Profile)
 admin.site.register(Cart, CartAdminView)
