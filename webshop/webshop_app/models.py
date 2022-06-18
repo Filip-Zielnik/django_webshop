@@ -47,6 +47,11 @@ class Product(models.Model):
     def __str__(self):
         return self.product
 
+    def get_absolute_url(self):
+        return reverse("core:product", kwargs={
+            "pk": self.pk
+        })
+
     def get_add_to_cart_url(self) :
         return reverse("core:add-to-cart", kwargs={
             "pk": self.pk
@@ -62,6 +67,11 @@ class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+
+    def get_remove_from_cart_url(self):
+        return reverse("core:remove-from-cart", kwargs={
+            "pk": self.pk
+        })
 
 
 class Order(models.Model):

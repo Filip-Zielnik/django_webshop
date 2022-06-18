@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 
 from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm
-from .models import Address, Product, Profile, Order, Cart
+from .models import Address, Product, Profile, Cart
 
 User = get_user_model
 
@@ -290,10 +290,11 @@ def add_to_cart(request, pk):
         return redirect('product', pk=pk)
 
 
-# def remove_from_cart(request, pk):
-#     if request.user.is_authenticated:
-#         user = request.user.id
-#         product = get_object_or_404(Product, pk=pk)
+def remove_from_cart(request, cart_id):
+    if request.user.is_authenticated:
+        cart = Cart.objects.get(user=request.user.id, id=cart_id)
+        cart.delete()
+        return redirect('cart')
 
 
 class OrderView(View):
