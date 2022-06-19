@@ -49,7 +49,16 @@
             {% for comment in comment_form %}
                 <span style="font-size:20px">{{ comment.text }}</span>
                 <br>
-                <span style="font-size:15px">Komentarz dodany przez: {{ comment.user.username }} | {{ comment.text_date }}</span>
+                <span style="font-size:15px">
+                    Dodany przez: {{ comment.user }} | {{ comment.text_date }}
+
+                    {% if user == comment.user %}
+                        {% for product in product_form %}
+                            | <a href="/remove-comment/{{ comment.id }}/{{ product.pk }}/">Usuń</a>
+                        {% endfor %}
+                    {% endif %}
+
+                </span>
                 <p></p>
             {% endfor %}
         {% else %}

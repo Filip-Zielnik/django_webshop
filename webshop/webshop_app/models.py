@@ -1,13 +1,15 @@
-from datetime import datetime
 import uuid as uuid
 
+from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+
 from django_countries.fields import CountryField
 
 
 class Profile(models.Model):
+    """ Extends auth.User model. """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birth_date = models.DateField()
 
@@ -16,6 +18,7 @@ class Profile(models.Model):
 
 
 class Address(models.Model):
+    """ Model for addresses. One user can store many addresses. """
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     country = CountryField()
@@ -28,6 +31,7 @@ class Address(models.Model):
 
 
 class Category(models.Model):
+    """ Category model. """
     category = models.CharField(max_length=100)
 
     def __str__(self):
@@ -35,6 +39,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """ Product model. Belongs to specific category. """
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     product = models.CharField(max_length=100)
     description = models.TextField(null=True)
@@ -47,12 +52,14 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
+    """ Cart model. Stores products for further actions. """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
 
 class Order(models.Model):
+    """ Order model. """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     cart = models.ManyToManyField(Cart)
     order_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
@@ -63,6 +70,7 @@ class Order(models.Model):
 
 
 class Comment(models.Model):
+    """ Comment model. """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     text = models.TextField()

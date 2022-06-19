@@ -34,7 +34,8 @@ from webshop_app.views import \
     CartView, \
     OrderView, \
     add_to_cart, \
-    remove_from_cart
+    remove_from_cart, \
+    remove_comment
 
 
 urlpatterns = [
@@ -58,4 +59,5 @@ urlpatterns = [
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
     path('category/motherboards/', MotherboardView.as_view(), name="category-motherboard"),
     path('product/<int:pk>/', ProductView.as_view(), name="product"),
+    path('remove-comment/<comment_id>/<pk>/', remove_comment, name="remove-comment"),
 ]

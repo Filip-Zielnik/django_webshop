@@ -1,30 +1,28 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
-
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm, AddCommentForm
-from .models import Address, Product, Profile, Cart, Order, Comment
-
-User = get_user_model
+from .forms import AddAddressForm, AddCommentForm, ChangePasswordForm, LoginForm, ProfileForm, UpdateProfileForm, \
+    UpdateUserForm, UserForm
+from .models import Address, Cart, Comment, Product, Profile, Order
 
 
 class HomeView(View):
     """ Displays homepage. """
 
     def get(self, request):
+        """ Home view. """
         return render(request=request, template_name="home.html")
 
 
 class RegistrationView(View):
-    """ Displays registration form with extended django-user's fields. """
+    """ Allows user to create account. """
 
-    def get(self, request, *args, **kwargs):
-        """ Displays form to fill. Username, password, email and date of birth are required. """
+    def get(self, request):
+        """ Displays registration form with extended django-user's fields. """
         user_form = UserForm
         profile_form = ProfileForm
         context = {
@@ -33,7 +31,7 @@ class RegistrationView(View):
         }
         return render(request=request, template_name="registration.html", context=context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """ Creates a new user. """
         user_form = UserForm(request.POST)
         profile_form = ProfileForm(request.POST)
@@ -60,7 +58,7 @@ class UpdateUserView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Displays user's data. """
         update_user_form = UpdateUserForm(instance=request.user)
         update_profile_form = UpdateProfileForm(instance=request.user.profile)
@@ -70,7 +68,7 @@ class UpdateUserView(LoginRequiredMixin, View):
         }
         return render(request=request, template_name="update_user.html", context=context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """ Modifies user's data. """
         update_user_form = UpdateUserForm(request.POST, instance=request.user)
         update_profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
@@ -94,7 +92,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Displays change password form. """
         form = ChangePasswordForm(instance=request.user)
         context = {
@@ -102,7 +100,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
         }
         return render(request=request, template_name="change_password.html", context=context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """ Changes the user's password. """
         form = ChangePasswordForm(request.POST, instance=request.user)
 
@@ -124,7 +122,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 class LoginView(View):
     """ Allows user to log in using username & password. """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Displays login form. """
         form = LoginForm
         context = {
@@ -132,7 +130,7 @@ class LoginView(View):
         }
         return render(request=request, template_name="login.html", context=context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """ Logs the user in. """
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -154,7 +152,7 @@ class LoginView(View):
 class LogoutView(View):
     """ Allows user to log out. """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Logs out the user. """
         logout(request)
         return render(request=request, template_name='logout.html')
@@ -165,7 +163,7 @@ class LoggedView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Displays user's data such as username, first name, address, ect. """
         address_form = Address.objects.filter(profile_id=request.user.id).order_by('name')
         order_form = Order.objects.filter(user_id=request.user.id).order_by('-order_date')
@@ -177,21 +175,19 @@ class LoggedView(LoginRequiredMixin, View):
 
 
 class AddressView(LoginRequiredMixin, View):
-    """
-    GET: Displays detailed information about address such as country, city, ect.
-    POST: Allows to delete address.
-    """
+    """ Allows user to check the address details and to remove it if necessary. """
 
     login_url = '/login/'
 
-    def get(self, request, address_id, *args, **kwargs):
+    def get(self, request, address_id):
+        """ Displays detailed information about address such as country, city, ect. """
         form = Address.objects.filter(profile_id=request.user.id, id=address_id)
         context = {
             'form': form,
         }
         return render(request=request, template_name="address.html", context=context)
 
-    def post(self, request, address_id, *args, **kwargs):
+    def post(self, request, address_id):
         """ Deletes the user's address. """
         address = Address.objects.filter(profile_id=request.user.id, id=address_id)
         address.delete()
@@ -203,7 +199,7 @@ class AddAddressView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Displays address form to fill. """
         form = AddAddressForm()
         context = {
@@ -211,7 +207,7 @@ class AddAddressView(LoginRequiredMixin, View):
         }
         return render(request=request, template_name="add_address.html", context=context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """ Creates new user's address. """
         form = AddAddressForm(request.POST)
 
@@ -245,7 +241,7 @@ class ChangeAddressView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, address_id, *args, **kwargs):
+    def get(self, request, address_id):
         """ Displays changeable address details. """
         address = Address.objects.get(profile_id=request.user.id, id=address_id)
         form = AddAddressForm(instance=address)
@@ -254,7 +250,7 @@ class ChangeAddressView(LoginRequiredMixin, View):
         }
         return render(request=request, template_name="change_address.html", context=context)
 
-    def post(self, request, address_id, *args, **kwargs):
+    def post(self, request, address_id):
         """ Modifies user's address. """
         address = Address.objects.get(profile_id=request.user.id, id=address_id)
         form = AddAddressForm(request.POST, instance=address)
@@ -276,7 +272,7 @@ class CartView(LoginRequiredMixin, View):
 
     login_url = '/login/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """ Displays products in the cart. """
         form = Cart.objects.filter(user_id=request.user.id)
         context = {
@@ -284,8 +280,8 @@ class CartView(LoginRequiredMixin, View):
         }
         return render(request=request, template_name="cart.html", context=context)
 
-    def post(self, request, *args, **kwargs):
-        """ Creates order. """
+    def post(self, request):
+        """ Creates order. NOT FINISHED"""
         # cart = Cart.objects.filter(user_id=request.user.id)
         # order = Order.objects.create(
         #     user=request.user.id,
@@ -318,24 +314,24 @@ def remove_from_cart(request, cart_id):
 
 
 class OrderView(LoginRequiredMixin, View):
-    """ ROBOCZY WIDOK. """
+    """ NOT FINISHED. """
 
     login_url = '/login/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
+        """ Displays order details. """
         order_form = Order.objects.all()
-        address_from = Address.objects.filter(profile_id=request.user.id)
         context = {
             'order_from': order_form,
-            'address_form': address_from,
         }
         return render(request=request, template_name="order.html", context=context)
 
 
 class CpuView(View):
-    """ Displays only products in CPU category(id=1). """
+    """ CPUs view. """
 
     def get(self, request):
+        """ Displays only products in CPU category(id=1). """
         form = Product.objects.filter(category_id='1')
         context = {
             'form': form,
@@ -344,9 +340,10 @@ class CpuView(View):
 
 
 class GpuView(View):
-    """ Displays only products in GPU category(id=2). """
+    """ GPUs view. """
 
     def get(self, request):
+        """ Displays only products in GPU category(id=2). """
         form = Product.objects.filter(category_id='2')
         context = {
             'form': form,
@@ -355,9 +352,10 @@ class GpuView(View):
 
 
 class MotherboardView(View):
-    """ Displays only products in Motherboards category(id=3). """
+    """ Motherboards view. """
 
     def get(self, request):
+        """ Displays only products in Motherboards category(id=3). """
         form = Product.objects.filter(category_id='3')
         context = {
             'form': form,
@@ -366,9 +364,10 @@ class MotherboardView(View):
 
 
 class ProductView(View):
-    """ Displays product details - specification, price, etc. """
+    """ Product's details view. """
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, pk):
+        """ Displays product details and comments section. """
         product_form = Product.objects.filter(id=pk)
         comment_form = Comment.objects.filter(product_id=pk).order_by('-text_date')
         add_comment_form = AddCommentForm
@@ -379,7 +378,8 @@ class ProductView(View):
         }
         return render(request=request, template_name="product.html", context=context)
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, pk):
+        """ Creates comment. """
         add_comment_form = AddCommentForm(data=request.POST)
         if add_comment_form.is_valid():
             text = add_comment_form.cleaned_data['text']
@@ -392,10 +392,10 @@ class ProductView(View):
         return redirect('product', pk=pk)
 
 
-# @login_required
-# def remove_comment(request, cart_id):
-#     """ Removes product from the cart. """
-#     cart = Cart.objects.get(user=request.user.id, id=cart_id)
-#     cart.delete()
-#     messages.success(request, 'Produkt został usunięty z koszyka!')
-#     return redirect('cart')
+@login_required
+def remove_comment(request, comment_id, pk):
+    """ Removes comment from product's view. """
+    comment = Comment.objects.get(user=request.user.id, id=comment_id)
+    comment.delete()
+    messages.success(request, 'Komentarz został usunięty!')
+    return redirect('product', pk=pk)
