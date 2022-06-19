@@ -54,7 +54,6 @@ urlpatterns = [
     path('add-to-cart/<pk>/', add_to_cart, name="add-to-cart"),
     path('remove-from-cart/<cart_id>/', remove_from_cart, name="remove-from-cart"),
     path('order/<order_id>/', OrderView.as_view(), name="order"),
-    path('order/', OrderView.as_view(), name="order"),
     path('category/cpu/', CpuView.as_view(), name="category-cpu"),
     path('category/gpu/', GpuView.as_view(), name="category-gpu"),
     path('category/motherboards/', MotherboardView.as_view(), name="category-motherboard"),

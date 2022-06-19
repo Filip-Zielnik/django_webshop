@@ -168,7 +168,7 @@ class LoggedView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         """ Displays user's data such as username, first name, address, ect. """
         address_form = Address.objects.filter(profile_id=request.user.id).order_by('name')
-        order_form = Order.objects.filter(user_id=request.user.id)
+        order_form = Order.objects.filter(user_id=request.user.id).order_by('-order_date')
         context = {
             'address_form': address_form,
             'order_form': order_form,
@@ -286,7 +286,13 @@ class CartView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         """ Creates order. """
-        pass
+        # cart = Cart.objects.filter(user_id=request.user.id)
+        # order = Order.objects.create(
+        #     user=request.user.id,
+        #     cart=cart,
+        # )
+
+        return render(request=request, template_name="order_placed.html")
 
 
 @login_required
@@ -317,9 +323,11 @@ class OrderView(LoginRequiredMixin, View):
     login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
-        order_form = Order.objects.filter(user=request.user.id)
+        order_form = Order.objects.all()
+        address_from = Address.objects.filter(profile_id=request.user.id)
         context = {
             'order_from': order_form,
+            'address_form': address_from,
         }
         return render(request=request, template_name="order.html", context=context)
 

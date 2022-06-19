@@ -57,9 +57,6 @@ class Order(models.Model):
     cart = models.ManyToManyField(Cart)
     order_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
     order_date = models.DateTimeField(default=datetime.now)
-    note = models.TextField(null=True, blank=True, max_length=1000)
-    cancelled = models.BooleanField(default=False)
-    confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user)

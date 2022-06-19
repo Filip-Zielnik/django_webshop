@@ -2,6 +2,21 @@
 
 {% block head %}
     <title>Konto</title>
+
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        .tab th {
+            border: 2px solid black;
+            padding: 5px;
+        }
+        .tab td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+
 {% endblock %}
 
 
@@ -33,10 +48,20 @@
 
     {% if order_form %}
         <strong>Twoje zamówienia:</strong>
-
-        {% for order in order_form %}
-            <li><a href="/order/{{ order.id }}">{{ order.order_id }}</a></li>
-        {% endfor %}
+        <table class="tab">
+                <thead>
+                    <th>Data</th>
+                    <th>Nr zamówienia</th>
+                </thead>
+            <tbody>
+                {% for order in order_form %}
+                    <tr>
+                        <td>{{ order.order_date }}</td>
+                        <td><a href="/order/{{ order.id }}">{{ order.order_id }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
     {% endif %}
 
 {% endblock %}

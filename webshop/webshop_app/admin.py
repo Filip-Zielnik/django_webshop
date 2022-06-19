@@ -23,8 +23,8 @@ class CartAdminView(admin.ModelAdmin):
 
 
 admin.site.register(Address, AddressAdmin)
-admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Profile)
 admin.site.register(Cart, CartAdminView)
+admin.site.register(Category)
+admin.site.register(Profile)
 admin.site.register(Order)

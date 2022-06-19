@@ -7,4 +7,16 @@
 
 {% block body %}
 
+    {{ order.order_date }}
+
+    {% for order in order_form %}
+        {{ order.order_date }}
+        {{ order }}
+    {% endfor %}
+
+    {% for address in address_form %}
+        {{ address.zip_code }}
+        {{ address }}
+    {% endfor %}
+
 {% endblock %}
