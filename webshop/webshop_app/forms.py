@@ -7,7 +7,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import Profile, Address
+from .models import Profile, Address, Comment
 
 from django.contrib.auth.models import User
 
@@ -83,7 +83,6 @@ class ChangePasswordForm(forms.ModelForm):
 
 
 class AddAddressForm(forms.ModelForm):
-
     class Meta:
         model = Address
         fields = ('name', 'country', 'city', 'address', 'zip_code')
@@ -96,3 +95,10 @@ class AddAddressForm(forms.ModelForm):
 
         }
         widgets = {'country': CountrySelectWidget()}
+
+
+class AddCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text',)
+        labels = {'text': ''}

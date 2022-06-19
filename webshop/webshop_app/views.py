@@ -7,8 +7,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 
-from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm
-from .models import Address, Product, Profile, Cart, Order
+from .forms import LoginForm, UserForm, ProfileForm, UpdateUserForm, UpdateProfileForm, ChangePasswordForm, AddAddressForm, AddCommentForm
+from .models import Address, Product, Profile, Cart, Order, Comment
 
 User = get_user_model
 
@@ -369,8 +369,33 @@ class ProductView(View):
     """ Displays product details - specification, price, etc. """
 
     def get(self, request, pk, *args, **kwargs):
-        form = Product.objects.filter(id=pk)
+        product_form = Product.objects.filter(id=pk)
+        comment_form = Comment.objects.filter(product_id=pk).order_by('-text_date')
+        add_comment_form = AddCommentForm
         context = {
-            'form': form,
+            'product_form': product_form,
+            'comment_form': comment_form,
+            'add_comment_form': add_comment_form,
         }
         return render(request=request, template_name="product.html", context=context)
+
+    def post(self, request, pk, *args, **kwargs):
+        add_comment_form = AddCommentForm(data=request.POST)
+        if add_comment_form.is_valid():
+            text = add_comment_form.cleaned_data['text']
+            comment = Comment.objects.create(
+                user_id=request.user.id,
+                product_id=pk,
+                text=text,
+            )
+            comment.save()
+        return redirect('product', pk=pk)
+
+
+# @login_required
+# def remove_comment(request, cart_id):
+#     """ Removes product from the cart. """
+#     cart = Cart.objects.get(user=request.user.id, id=cart_id)
+#     cart.delete()
+#     messages.success(request, 'Produkt został usunięty z koszyka!')
+#     return redirect('cart')

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Address, Category, Product, Profile, Cart, Order
+from .models import Address, Category, Product, Profile, Cart, Order, Comment
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -22,9 +22,14 @@ class CartAdminView(admin.ModelAdmin):
     list_editable = ('quantity',)
 
 
+class CommentAdminView(admin.ModelAdmin):
+    list_display = ('user', 'product')
+
+
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Cart, CartAdminView)
+admin.site.register(Comment, CommentAdminView)
 admin.site.register(Category)
 admin.site.register(Profile)
 admin.site.register(Order)
