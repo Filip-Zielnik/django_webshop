@@ -61,7 +61,8 @@ class Cart(models.Model):
 class Order(models.Model):
     """ Order model. """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    cart = models.ManyToManyField(Cart)
+    # cart = models.ManyToManyField(Cart)  # błąd = do poprawy
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     order_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
     order_date = models.DateTimeField(default=datetime.now)
 
