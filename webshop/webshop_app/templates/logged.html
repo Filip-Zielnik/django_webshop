@@ -57,7 +57,7 @@
                 {% for order in order_form %}
                     <tr>
                         <td>{{ order.order_date }}</td>
-                        <td><a href="/order/{{ order.id }}">{{ order.order_id }}</a></td>
+                        <td><a href="/order/{{ order.id }}/">{{ order.order_id }}</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

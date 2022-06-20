@@ -274,7 +274,7 @@ class CartView(LoginRequiredMixin, View):
 
     def get(self, request):
         """ Displays products in the cart. """
-        form = Cart.objects.filter(user_id=request.user.id)
+        form = Cart.objects.filter(user_id=request.user)
         context = {
             'form': form,
         }
@@ -282,12 +282,11 @@ class CartView(LoginRequiredMixin, View):
 
     def post(self, request):
         """ Creates order. NOT FINISHED"""
-        # cart = Cart.objects.filter(user_id=request.user.id)
-        # order = Order.objects.create(
-        #     user=request.user.id,
-        #     cart=cart,
-        # )
-
+        user = request.user.id
+        order = Order.objects.create(
+            user_id=user,
+        )
+        order.save()
         return render(request=request, template_name="order_placed.html")
 
 
@@ -314,15 +313,17 @@ def remove_from_cart(request, cart_id):
 
 
 class OrderView(LoginRequiredMixin, View):
-    """ NOT FINISHED. """
+    """ Order details view.. """
 
     login_url = '/login/'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         """ Displays order details. """
-        order_form = Order.objects.all()
+        order_form = Order.objects.filter(user_id=request.user.id)
+        cart_form = Cart.objects.filter(user=request.user.id)
         context = {
-            'order_from': order_form,
+            'order_form': order_form,
+            'cart_form': cart_form,
         }
         return render(request=request, template_name="order.html", context=context)
 
